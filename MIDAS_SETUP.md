@@ -7,6 +7,16 @@ Environment variables (set in your deployment environment):
 - `MIDAS_API_URL` - URL of the external MIDAS API that accepts POST JSON { message, context } and returns JSON with `reply` or `text`.
 - `MIDAS_API_KEY` - (optional) API key or Bearer token for the external service.
 
+Google Cloud APIs (optional)
+- `GOOGLE_API_KEY` - API key created in Google Cloud Console (APIs & Services → Credentials).
+
+If you want MIDAS to use Google Translate or Vision, set `GOOGLE_API_KEY`.
+Server exposes helper proxy endpoints:
+- `POST /api/google/translate` - body: `{ text: string, target?: string }` returns `{ translatedText }`.
+- `POST /api/google/vision` - body: `{ imageBase64?: string, imageUrl?: string }` returns `{ responses }` from Vision API.
+
+These endpoints forward requests to Google using the `GOOGLE_API_KEY` and keep your key off the client.
+
 Behavior:
 - If `MIDAS_API_URL` is set, the server will forward chat messages to that URL via POST.
 - If `MIDAS_API_URL` is not set, the server returns a demo fallback reply.

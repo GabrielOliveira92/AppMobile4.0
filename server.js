@@ -79,6 +79,54 @@ app.post('/api/midas/chat', async (req, res) => {
   }
 })
 
+// Google Translate proxy
+app.post('/api/google/translate', async (req, res) => {
+  const { text, target } = req.body || {}
+  const googleKey = process.env.GOOGLE_API_KEY
+
+  if (!googleKey) return res.status(400).json({ error: 'GOOGLE_API_KEY not configured' })
+
+  try {
+    const url = `https://translation.googleapis.com/language/translate/v2?key=${googleKey}`
+    const payload = { q: text, target: target || 'pt' }
+    const r = await fetch(url, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) })
+    const data = await r.json()
+    const translatedText = data && data.data && data.data.translations && data.data.translations[0] && data.data.translations[0].translatedText
+    return res.json({ translatedText, raw: data })
+  } catch (error) {
+    console.error('Translate error', error)
+    return res.status(500).json({ error: 'Translate error' })
+  }
+})
+
+// Google Vision proxy
+app.post('/api/google/vision', async (req, res) => {
+  const { imageBase64, imageUrl } = req.body || {}
+  const googleKey = process.env.GOOGLE_API_KEY
+
+  if (!googleKey) return res.status(400).json({ error: 'GOOGLE_API_KEY not configured' })
+
+  try {
+    const url = `https://vision.googleapis.com/v1/images:annotate?key=${googleKey}`
+    const requests = []
+
+    if (imageBase64) {
+      requests.push({ image: { content: imageBase64 }, features: [{ type: 'LABEL_DETECTION', maxResults: 5 }, { type: 'TEXT_DETECTION', maxResults: 5 }] })
+    } else if (imageUrl) {
+      requests.push({ image: { source: { imageUri: imageUrl } }, features: [{ type: 'LABEL_DETECTION', maxResults: 5 }, { type: 'TEXT_DETECTION', maxResults: 5 }] })
+    } else {
+      return res.status(400).json({ error: 'imageBase64 or imageUrl required' })
+    }
+
+    const r = await fetch(url, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ requests }) })
+    const data = await r.json()
+    return res.json({ responses: data.responses || data })
+  } catch (error) {
+    console.error('Vision error', error)
+    return res.status(500).json({ error: 'Vision error' })
+  }
+})
+
 // Static frontend build
 app.use(express.static(path.join(__dirname, 'dist')));
 

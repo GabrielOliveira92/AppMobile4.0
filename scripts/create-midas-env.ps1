@@ -1,6 +1,8 @@
+# Parameters: MidasApiUrl (required), MidasApiKey (optional), GoogleApiKey (optional)
 param(
   [Parameter(Mandatory=$true)][string]$MidasApiUrl,
-  [Parameter(Mandatory=$false)][string]$MidasApiKey
+  [Parameter(Mandatory=$false)][string]$MidasApiKey,
+  [Parameter(Mandatory=$false)][string]$GoogleApiKey
 )
 
 # This script creates a local .env file with MIDAS configuration.
@@ -13,6 +15,7 @@ Write-Host "Creating .env at $envFile"
 $content = @()
 $content += "MIDAS_API_URL=$MidasApiUrl"
 if ($MidasApiKey) { $content += "MIDAS_API_KEY=$MidasApiKey" }
+if ($GoogleApiKey) { $content += "GOOGLE_API_KEY=$GoogleApiKey" }
 
 Set-Content -Path $envFile -Value $content -Encoding UTF8
 
