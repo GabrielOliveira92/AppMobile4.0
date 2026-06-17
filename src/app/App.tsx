@@ -9,7 +9,6 @@ import { ProjecoesPage } from './pages/ProjecoesPage';
 import { NovaProjecaoPage } from './pages/NovaProjecaoPage';
 import { EmprestimosPage } from './pages/EmprestimosPage';
 import { NovoEmprestimoPage } from './pages/NovoEmprestimoPage';
-import { RecorrenciasPage } from './pages/RecorrenciasPage';
 import { NovaRecorrenciaPage } from './pages/NovaRecorrenciaPage';
 import { EmpresaPage } from './pages/EmpresaPage';
 import { RegisterPage } from './pages/RegistrarPage';
@@ -30,7 +29,6 @@ export default function App() {
           <Route path="/projecoes/nova" element={<ModuleGuard module="projecoes"><NovaProjecaoPage /></ModuleGuard>} />
           <Route path="/emprestimos" element={<EmprestimosPage />} />
           <Route path="/emprestimos/novo" element={<ModuleGuard module="emprestimos"><NovoEmprestimoPage /></ModuleGuard>} />
-          <Route path="/recorrencias" element={<RecorrenciasPage />} />
           <Route path="/recorrencias/novo" element={<NovaRecorrenciaPage />} />
           <Route path="/empresa" element={<EmpresaPage />} />
           <Route path="/midas-demo" element={<MidasDemoPage />} />

@@ -38,6 +38,9 @@ import type { Lancamento } from '../../types';
 import { toast } from 'sonner';
 import { useAuth } from '../../context/AuthContext';
 import { canManageModule, isCompanyAdmin } from '../../utils/permissions';
+import { recorrenciaService } from '../../services/recorrenciaService';
+import type { Recorrencia } from '../../types';
+import { Link } from 'react-router';
 
 export function LancamentosPage() {
   const { user } = useAuth();
@@ -50,10 +53,21 @@ export function LancamentosPage() {
   const [deleteId, setDeleteId] = useState<number | null>(null);
   const [filterYear, setFilterYear] = useState('');
   const [filterMonth, setFilterMonth] = useState('');
+  const [recorrencias, setRecorrencias] = useState<Recorrencia[]>([]);
 
   useEffect(() => {
     loadLancamentos();
+    loadRecorrencias();
   }, []);
+
+  const loadRecorrencias = async () => {
+    try {
+      const data = isAdmin ? await recorrenciaService.getAll() : await recorrenciaService.getAllEmpresa();
+      setRecorrencias(data.slice(0,5));
+    } catch (error) {
+      // silently ignore
+    }
+  };
 
   useEffect(() => {
     applyFilters();
@@ -164,6 +178,39 @@ export function LancamentosPage() {
             </Button>
           </Link>
         </div>
+
+        {/* Recorrências summary */}
+        <Card className="p-4">
+          <div className="flex items-center justify-between">
+            <div>
+              <h2 className="text-lg font-semibold">Recorrências</h2>
+              <p className="text-sm text-gray-500">Visualize e inclua recorrências diretamente aqui</p>
+            </div>
+            <div className="flex gap-2">
+              <Link to="/recorrencias/novo">
+                <Button className="bg-[#FFC107] hover:bg-[#FFB300] text-black font-medium">
+                  <Plus className="w-4 h-4 mr-2" /> Nova Recorrência
+                </Button>
+              </Link>
+            </div>
+          </div>
+
+          <div className="mt-4 space-y-2">
+            {recorrencias.length === 0 ? (
+              <div className="text-gray-500">Nenhuma recorrência encontrada</div>
+            ) : (
+              recorrencias.map(r => (
+                <div key={r.idRecorrente} className="flex items-center justify-between">
+                  <div>
+                    <div className="font-medium">{r.dsRecorrente}</div>
+                    <div className="text-sm text-gray-500">{r.qtdeRecorrente}x • {new Date(r.dataInicio).toLocaleDateString()}</div>
+                  </div>
+                  <div className="text-right font-semibold">{r.valor ? new Intl.NumberFormat('pt-BR',{style:'currency',currency:'BRL'}).format(r.valor) : '-'}</div>
+                </div>
+              ))
+            )}
+          </div>
+        </Card>
 
         {/* Filtros */}
         <Card className="p-4">
