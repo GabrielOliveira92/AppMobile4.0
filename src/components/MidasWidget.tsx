@@ -11,6 +11,7 @@ export function MidasWidget() {
   const [messages, setMessages] = useState<string[]>([
     'Olá! Eu sou Midas. Posso dar insights financeiros.'
   ])
+  const [input, setInput] = useState('')
   const [settingsOpen, setSettingsOpen] = useState(false)
   const [profile, setProfile] = useState<MidasProfile>({})
 
@@ -31,6 +32,31 @@ export function MidasWidget() {
 
   function sendTip() {
     setMessages((m) => [...m, 'Dica: Separe contas pessoais e empresariais.'])
+  }
+
+  async function sendMessage() {
+    if (!input) return
+    setMessages((m) => [...m, `Você: ${input}`])
+    const token = localStorage.getItem('demo-token')
+
+    try {
+      const res = await fetch('/api/midas/chat', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          ...(token ? { Authorization: `Bearer ${token}` } : {}),
+        },
+        body: JSON.stringify({ message: input }),
+      })
+
+      const data = await res.json()
+
+      setMessages((m) => [...m, data.reply || 'Sem resposta do assistente.'])
+    } catch (e) {
+      setMessages((m) => [...m, 'Erro ao contatar MIDAS.'])
+    } finally {
+      setInput('')
+    }
   }
 
   function saveProfile() {
@@ -110,8 +136,16 @@ export function MidasWidget() {
               {t}
             </div>
           ))}
-          <div style={{ display: 'flex', gap: 8 }}>
-            <button onClick={sendTip}>Enviar dica</button>
+          <div style={{ display: 'flex', gap: 8, marginTop: 8 }}>
+            <input
+              aria-label="midas-input"
+              value={input}
+              onChange={(e) => setInput(e.target.value)}
+              placeholder="Escreva sua pergunta para o Midas"
+              style={{ flex: 1, padding: 8, borderRadius: 6, border: '1px solid #ddd' }}
+            />
+            <button onClick={sendMessage}>Enviar</button>
+            <button onClick={sendTip}>Dica</button>
             <button onClick={() => setOpen(false)}>Fechar</button>
           </div>
         </div>

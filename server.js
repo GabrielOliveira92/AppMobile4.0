@@ -45,6 +45,40 @@ app.put('/api/midas/profile', (req, res) => {
   return res.json({ profile })
 })
 
+// Chat endpoint: forwards messages to external MIDAS API if configured,
+// otherwise returns a simple demo response.
+app.post('/api/midas/chat', async (req, res) => {
+  const { message, context } = req.body || {}
+  const apiUrl = process.env.MIDAS_API_URL
+  const apiKey = process.env.MIDAS_API_KEY
+
+  if (!apiUrl) {
+    // Demo fallback reply
+    const reply = `Midas (demo): Recebi sua mensagem: ${message || ''}`
+    return res.json({ reply })
+  }
+
+  try {
+    const headers = { 'Content-Type': 'application/json' }
+    if (apiKey) headers['Authorization'] = `Bearer ${apiKey}`
+
+    const resp = await fetch(apiUrl, {
+      method: 'POST',
+      headers,
+      body: JSON.stringify({ message, context }),
+    })
+
+    const data = await resp.json()
+
+    const reply = data.reply || data.text || (data.choices && data.choices[0] && data.choices[0].message && data.choices[0].message.content) || JSON.stringify(data)
+
+    return res.json({ reply })
+  } catch (error) {
+    console.error('MIDAS proxy error', error)
+    return res.status(500).json({ error: 'Error calling MIDAS API' })
+  }
+})
+
 // Static frontend build
 app.use(express.static(path.join(__dirname, 'dist')));
 
