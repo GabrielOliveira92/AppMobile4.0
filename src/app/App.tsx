@@ -13,6 +13,7 @@ import { RecorrenciasPage } from './pages/RecorrenciasPage';
 import { NovaRecorrenciaPage } from './pages/NovaRecorrenciaPage';
 import { EmpresaPage } from './pages/EmpresaPage';
 import { RegisterPage } from './pages/RegistrarPage';
+import { MidasDemoPage } from './pages/MidasDemoPage';
 import { ModuleGuard } from './components/ModuleGuard';
 
 export default function App() {
@@ -32,6 +33,7 @@ export default function App() {
           <Route path="/recorrencias" element={<RecorrenciasPage />} />
           <Route path="/recorrencias/novo" element={<NovaRecorrenciaPage />} />
           <Route path="/empresa" element={<EmpresaPage />} />
+          <Route path="/midas-demo" element={<MidasDemoPage />} />
           <Route path="/" element={<Navigate to="/login" replace />} />
           <Route path="*" element={<Navigate to="/login" replace />} />
         </Routes>

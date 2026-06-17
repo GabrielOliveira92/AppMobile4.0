@@ -15,6 +15,18 @@ const port = process.env.PORT || 3000;
 app.use(cors());
 app.use(express.json());
 
+// Demo auth endpoint for local testing (username/password demo)
+const DEMO_USER = process.env.DEMO_USER || 'Admin'
+const DEMO_PASS = process.env.DEMO_PASS || 'Senha@123'
+
+app.post('/api/demo-auth', (req, res) => {
+  const { username, password } = req.body || {}
+  if (username === DEMO_USER && password === DEMO_PASS) {
+    return res.json({ token: 'demo-token', user: { username: DEMO_USER } })
+  }
+  return res.status(401).json({ message: 'Invalid credentials' })
+})
+
 // Static frontend build
 app.use(express.static(path.join(__dirname, 'dist')));
 
