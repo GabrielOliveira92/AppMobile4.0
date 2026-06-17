@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">Midas</string>
+    <string name="title_activity_main">Midas</string>
+    <string name="package_name">com.midas.finance</string>
+    <string name="custom_url_scheme">com.midas.finance</string>
+</resources>
