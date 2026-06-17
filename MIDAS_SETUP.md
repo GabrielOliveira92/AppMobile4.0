@@ -17,6 +17,15 @@ Server exposes helper proxy endpoints:
 
 These endpoints forward requests to Google using the `GOOGLE_API_KEY` and keep your key off the client.
 
+Alpha Vantage support (optional)
+- `ALPHA_VANTAGE_API_KEY` - API key from https://www.alphavantage.co/support/#api-key.
+- `GET /api/finance/alpha/intraday?symbol=IBM&interval=5min` - returns latest intraday quote for the requested symbol.
+
+Example Alpha Vantage intraday request:
+```bash
+curl "http://localhost:3000/api/finance/alpha/intraday?symbol=IBM&interval=5min"
+```
+
 Behavior:
 - If `MIDAS_API_URL` is set, the server will forward chat messages to that URL via POST.
 - If `MIDAS_API_URL` is not set, the server returns a demo fallback reply.
