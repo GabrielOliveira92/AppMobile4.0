@@ -27,6 +27,24 @@ app.post('/api/demo-auth', (req, res) => {
   return res.status(401).json({ message: 'Invalid credentials' })
 })
 
+// Simple in-memory store for MIDAS profiles keyed by token
+const midasProfiles = new Map()
+
+app.get('/api/midas/profile', (req, res) => {
+  const auth = req.headers.authorization || ''
+  const token = auth.replace(/^Bearer\s+/, '')
+  const profile = midasProfiles.get(token) || null
+  return res.json({ profile })
+})
+
+app.put('/api/midas/profile', (req, res) => {
+  const auth = req.headers.authorization || ''
+  const token = auth.replace(/^Bearer\s+/, '')
+  const profile = req.body || {}
+  midasProfiles.set(token, profile)
+  return res.json({ profile })
+})
+
 // Static frontend build
 app.use(express.static(path.join(__dirname, 'dist')));
 

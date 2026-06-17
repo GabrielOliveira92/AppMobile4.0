@@ -11,6 +11,19 @@ export function MidasWidget() {
   const [messages, setMessages] = useState<string[]>([
     'Olá! Eu sou Midas. Posso dar insights financeiros.'
   ])
+  const [settingsOpen, setSettingsOpen] = useState(false)
+  const [profile, setProfile] = useState<MidasProfile>({})
+
+  React.useEffect(() => {
+    const token = localStorage.getItem('demo-token')
+    if (!token) return
+    fetch('/api/midas/profile', { headers: { Authorization: `Bearer ${token}` } })
+      .then((r) => r.json())
+      .then((d) => {
+        if (d?.profile) setProfile(d.profile)
+      })
+      .catch(() => {})
+  }, [])
 
   function toggle() {
     setOpen(!open)
@@ -18,6 +31,21 @@ export function MidasWidget() {
 
   function sendTip() {
     setMessages((m) => [...m, 'Dica: Separe contas pessoais e empresariais.'])
+  }
+
+  function saveProfile() {
+    const token = localStorage.getItem('demo-token')
+    fetch('/api/midas/profile', {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+      body: JSON.stringify(profile),
+    })
+      .then((r) => r.json())
+      .then((d) => {
+        setMessages((m) => [...m, 'Perfil salvo com sucesso.'])
+        setSettingsOpen(false)
+      })
+      .catch(() => setMessages((m) => [...m, 'Erro ao salvar perfil.']))
   }
 
   return (
@@ -46,6 +74,37 @@ export function MidasWidget() {
           aria-label="midas-balloons"
           style={{ position: 'fixed', right: 100, bottom: 90, width: 280 }}
         >
+          <div style={{ marginBottom: 8 }}>
+            <button onClick={() => setSettingsOpen(!settingsOpen)}>Personalizar</button>
+          </div>
+          {settingsOpen && (
+            <div style={{ marginBottom: 8, background: '#f6f6f6', padding: 8, borderRadius: 8 }}>
+              <div>
+                <label>Raça: </label>
+                <select value={profile.race || ''} onChange={(e) => setProfile({ ...profile, race: e.target.value })}>
+                  <option value="">Padrão</option>
+                  <option value="branco">Branco</option>
+                  <option value="negro">Negro</option>
+                  <option value="pardo">Pardo</option>
+                </select>
+              </div>
+              <div>
+                <label>Sexo: </label>
+                <select value={profile.gender || ''} onChange={(e) => setProfile({ ...profile, gender: e.target.value })}>
+                  <option value="">Padrão</option>
+                  <option value="masculino">Masculino</option>
+                  <option value="feminino">Feminino</option>
+                </select>
+              </div>
+              <div>
+                <label>Cor: </label>
+                <input value={profile.color || ''} onChange={(e) => setProfile({ ...profile, color: e.target.value })} />
+              </div>
+              <div style={{ marginTop: 8 }}>
+                <button onClick={saveProfile}>Salvar</button>
+              </div>
+            </div>
+          )}
           {messages.map((t, i) => (
             <div key={i} style={{ background: '#fff', padding: 8, marginBottom: 8, borderRadius: 8 }}>
               {t}
