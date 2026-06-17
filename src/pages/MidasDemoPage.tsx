@@ -28,12 +28,12 @@ export function MidasDemoPage() {
       <h2>MIDAS Demo</h2>
       <form onSubmit={login}>
         <div>
-          <label>Usuário: </label>
-          <input value={username} onChange={(e) => setUsername(e.target.value)} />
+          <label htmlFor="demo-username">Usuário: </label>
+          <input id="demo-username" value={username} onChange={(e) => setUsername(e.target.value)} />
         </div>
         <div>
-          <label>Senha: </label>
-          <input value={password} onChange={(e) => setPassword(e.target.value)} type="password" />
+          <label htmlFor="demo-password">Senha: </label>
+          <input id="demo-password" value={password} onChange={(e) => setPassword(e.target.value)} type="password" />
         </div>
         <button type="submit">Entrar</button>
       </form>
