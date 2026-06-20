@@ -265,6 +265,90 @@ Layout otimizado para:
 - Tablets
 - Mobile (sidebar responsiva)
 
+## 🌐 Integração com Google APIs
+
+O Midas suporta integração com múltiplas APIs do Google para ampliar suas capacidades:
+
+### APIs Disponíveis
+
+| API | Funcionalidade | Status |
+|-----|---|---|
+| 📊 **Google Sheets** | Importar/exportar dados | ✅ Pronta |
+| 🗺️ **Google Maps** | Geocodificação e análises | ✅ Pronta |
+| 📁 **Google Drive** | Armazenamento em nuvem | ✅ Pronta |
+| 📅 **Google Calendar** | Agendamento automático | ✅ Pronta |
+| 🤖 **Generative Language** | IA para análises (Gemini) | ✅ Ativa |
+
+### Como Ativar
+
+1. **Leia** o guia completo: [`GOOGLE_APIS_SETUP.md`](./GOOGLE_APIS_SETUP.md) (9 passos guiados)
+2. **Configure** as variáveis de ambiente: [`GOOGLE_APIS_SETUP.md#passo-4`](./GOOGLE_APIS_SETUP.md)
+3. **Veja exemplos** de código: [`GOOGLE_APIS_EXAMPLES.md`](./GOOGLE_APIS_EXAMPLES.md) (20+ exemplos)
+4. **Implemente** funcionalidades no seu projeto
+
+### Casos de Uso
+
+**📥 Importar dados em massa**
+```typescript
+const result = await api.importFromSheets('spreadsheetId');
+// Importa 1000+ lançamentos em segundos
+```
+
+**🗺️ Mapear transações por localidade**
+```typescript
+const data = await api.analyzeTransactionsByLocation(lancamentos);
+// Geocodifica endereços e agrupa por região
+```
+
+**📊 Gerar relatórios automáticos**
+```typescript
+await api.generateAutomaticReport('Relatório Mensal', dados);
+// Cria planilha no Google Sheets com dados formatados
+```
+
+**☁️ Sincronizar com Google Drive**
+```typescript
+const folder = await api.createDriveFolder('Backups - 2026');
+// Armazena backups em nuvem
+```
+
+### Documentação
+
+- 📄 **[GOOGLE_APIS_SETUP.md](./GOOGLE_APIS_SETUP.md)** - Guia passo a passo (15 páginas)
+- 📄 **[GOOGLE_APIS_EXAMPLES.md](./GOOGLE_APIS_EXAMPLES.md)** - 20+ exemplos de código
+- 📄 **[GOOGLE_APIS_SUMMARY.md](./GOOGLE_APIS_SUMMARY.md)** - Sumário executivo
+- 📄 **[src/services/googleApisService.ts](./src/services/googleApisService.ts)** - Implementação
+- 📄 **[src/routes/googleApisRoutes.ts](./src/routes/googleApisRoutes.ts)** - Endpoints
+
+### Endpoints Disponíveis
+
+#### Google Sheets
+- `POST /api/google/sheets/import` - Importar dados
+- `POST /api/google/sheets/export` - Exportar dados
+- `POST /api/google/sheets/create` - Criar nova planilha
+
+#### Google Maps
+- `POST /api/google/maps/geocode` - Geocodificar endereço
+- `POST /api/google/maps/reverse-geocode` - Reverter geocodificação
+- `POST /api/google/maps/distance` - Calcular distância
+- `POST /api/google/maps/nearby-places` - Buscar lugares próximos
+
+#### Google Drive
+- `GET /api/google/drive/files` - Listar arquivos
+- `POST /api/google/drive/create-folder` - Criar pasta
+
+#### Google Calendar
+- `POST /api/google/calendar/create-event` - Criar evento
+
+#### Análises Combinadas
+- `POST /api/google/analyze/transactions-by-location` - Analisar por localização
+- `POST /api/google/analyze/generate-report` - Gerar relatório automático
+
+#### Verificação
+- `GET /api/google/health` - Status das APIs
+
+Veja todos os exemplos em [GOOGLE_APIS_EXAMPLES.md](./GOOGLE_APIS_EXAMPLES.md)
+
 ## 🚀 Próximas Melhorias Sugeridas
 
 - Implementar formulários para Projeções, Empréstimos e Recorrências
@@ -273,6 +357,9 @@ Layout otimizado para:
 - Filtros avançados de busca
 - Modo escuro
 - Notificações de lançamentos recorrentes
+- ✨ **Novo**: Integração com Google Sheets para importação de dados
+- ✨ **Novo**: Dashboard com mapa de transações por localidade
+- ✨ **Novo**: Relatórios automáticos em Google Sheets
 
 ---
 
